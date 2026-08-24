@@ -1,0 +1,46 @@
+name: The Automated Forge
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  forge_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify GitHub OIDC Token
+        run: |
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL exists:"
+          echo $ACTIONS_ID_TOKEN_REQUEST_URL
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN exists:"
+          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
+
+      - name: Configure AWS OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::294699500655:role/DevSecOps-Pipeline-Role
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: SAST Quality Gate (tfsec)
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+        with:
+          tfsec_args: --soft-fail=false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
