@@ -14,3 +14,14 @@ This project implements a secure, least-privilege cloud infrastructure deploymen
 2. `build_success.png` — Proof of 9 resources added.
 3. `security_audit.png` — AWS Console verification of the attached IAM role.
 4. `destroy_verification.png` — Confirmation of the 9 destroyed resources.
+
+## Verification Evidence
+
+### Build Success
+![Build Success](./assets/build_success.png)
+
+### Security Audit (IAM Role)
+![Security Audit](./assets/security_audit.png)
+
+### Destroy Verification
+![Destroy Verification](./assets/destroy_verification.png)
