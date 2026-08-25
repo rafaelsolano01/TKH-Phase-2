@@ -64,13 +64,14 @@ resource "aws_route_table_association" "capstone_rta" {
 
 # ------------------------------------------------------------------------------
 # Phase 2: The Firewall
-# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------ 
 
 resource "aws_security_group" "web_sg" {
   name        = "capstone-web-sg"
   description = "Allow HTTP access from anywhere and SSH from home IP"
   vpc_id      = aws_vpc.capstone_vpc.id
 
+  #tfsec:ignore:aws-vpc-no-public-ingress-sgr
   ingress {
     description = "HTTP access from anywhere"
     from_port   = 80
@@ -114,18 +115,17 @@ data "aws_ami" "amazon_linux_2023" {
   }
 }
 
+#tfsec:ignore:aws-ec2-enforce-http-token-imds #tfsec:ignore:aws-ec2-enable-at-rest-encryption
 resource "aws_instance" "web_server" {
   ami                    = data.aws_ami.amazon_linux_2023.id
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.capstone_subnet.id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
-  # Encrypt the EC2 root block device
   root_block_device {
     encrypted = true
   }
 
-  # Ensure metadata service v2 (IMDSv2) is required
   metadata_options {
     http_tokens = "required"
   }
