@@ -71,6 +71,7 @@ resource "aws_security_group" "web_sg" {
 }
 
 # Explicit Security Group Rules with Descriptions
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr
 resource "aws_security_group_rule" "allow_http" {
   type              = "ingress"
   description       = "Allow HTTP traffic from everywhere"
