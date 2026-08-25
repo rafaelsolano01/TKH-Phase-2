@@ -1,27 +1,15 @@
-# TLAB 5: Budgeted Identity — Secure Infrastructure Deployment
+# Secure Automated Web Architecture
 
-## Project Overview
-This project implements a secure, least-privilege cloud infrastructure deployment for **Titan FinTech** using Terraform (Infrastructure as Code).
+## Description
+This repository provisions a secure, automated web architecture on AWS using Infrastructure as Code (IaC). It automates the deployment of a hardened VPC, isolated public subnet, custom security group rules, and an EC2 web server while enforcing security best practices.
 
-## Architectural Components
-* **Financial Firewall (AWS Budget):** Hard spending cap of $10.00 USD monthly with alerts at 80%.
-* **Secure Storage Vault (Private S3 Bucket):** Dynamically named using initials and random hex.
-* **Surgical IAM Privilege Layer:** Strict role-based access controls using `Titan-EC2-Vault-Role`.
-* **Compute Layer:** Ubuntu Server instance (`t2.micro`).
+## Technologies Used
+* **AWS**: Hosting VPC, Subnet, Internet Gateway, Security Groups, and EC2 instance.
+* **Terraform**: Infrastructure as Code (IaC) tool used to declare and provision resources.
+* **GitHub Actions**: Continuous Integration/Continuous Deployment (CI/CD) pipeline management.
+* **tfsec**: Static analysis security scanner for Terraform configurations.
 
-## Deliverables & Verification
-1. `main.tf` — Declared infrastructure configuration.
-2. `build_success.png` — Proof of 9 resources added.
-3. `security_audit.png` — AWS Console verification of the attached IAM role.
-4. `destroy_verification.png` — Confirmation of the 9 destroyed resources.
-
-## Verification Evidence
-
-### Build Success
-![Build Success](./assets/build_success.png)
-
-### Security Audit (IAM Role)
-![Security Audit](./assets/security_audit.png)
-
-### Destroy Verification
-![Destroy Verification](./assets/destroy_verification.png)
+## Architecture
+The infrastructure is built using a defense-in-depth approach:
+* **VPC & Subnet Isolation**: Resources are isolated within a `10.0.0.0/16` Virtual Private Cloud with a public subnet (`10.0.1.0/24`) attached to an Internet Gateway for routed access.
+* **Security Group Lockdown**: Inbound access via `tkh-web-security-group` restricts administrative access. HTTP (port 80) traffic is open for public web access, while SSH (port 22) access is restricted to authorized administrative IPs.
