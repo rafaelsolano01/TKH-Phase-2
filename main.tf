@@ -120,6 +120,16 @@ resource "aws_instance" "web_server" {
   subnet_id              = aws_subnet.capstone_subnet.id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
+  # Encrypt the EC2 root block device
+  root_block_device {
+    encrypted = true
+  }
+
+  # Ensure metadata service v2 (IMDSv2) is required
+  metadata_options {
+    http_tokens = "required"
+  }
+
   user_data = <<-EOF
               #!/bin/bash
               yum install -y httpd
